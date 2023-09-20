@@ -1,0 +1,43 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # Utilize the project's Docker base image.
+      - image: python:3.7.3-stretch
+
+    working_directory: ~/app
+
+    steps:
+      - checkout
+
+      # Retrieve and store dependencies for caching purposes.
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "requirements.txt" }}
+            # If an exact match isn't located, resort to utilizing the most recent cached version
+            - v1-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            make install
+            # Install hadolint
+            wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64 &&\
+            chmod +x /bin/hadolint
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+
+      # lint!
+      - run:
+          name: run lint
+          command: |
+            . venv/bin/activate 
+            make lint 
