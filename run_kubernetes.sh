@@ -5,7 +5,7 @@
 # Step 1:
 # This is your Docker ID/path
 # dockerpath=<>
-dockerpath="lhieu/microprj3"
+dockerpath="trunghieuluong/microprj3"
 # Step 2
 # Run the Docker Hub container with kubernetes
 kubectl run microprj3 \
@@ -17,4 +17,4 @@ kubectl run microprj3 \
 kubectl get pods
 # Step 4:
 # Forward the container port to a host
-kubectl port-forward project3 8000:80
+kubectl port-forward microprj3 8000:80

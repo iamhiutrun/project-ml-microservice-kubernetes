@@ -1,5 +1,4 @@
-<include a CircleCI status badge, here>
-
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/iamhiutrun/project-ml-microservice-kubernetes/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/iamhiutrun/project-ml-microservice-kubernetes/tree/main)
 ## Project Overview
 
 In this project, you will apply the skills you have acquired in this course to operationalize a Machine Learning Microservice API. 
@@ -58,10 +57,46 @@ In summary, this Makefile simplifies the development workflow by providing user-
 
 1. Standalone:  `python app.py`
 2. Run in Docker:  `./run_docker.sh`
+
+### ```run_docker.sh```
+
+Sure, let me explain each part of the script:
+
+- `#!/usr/bin/env bash`: This is called a "shebang" line. It tells the system which interpreter to use to execute the script. In this case, it specifies that the script should be executed using the Bash shell (`/bin/bash`), which is commonly available on Unix-like systems.
+
+- `docker build --tag=microprj3 .`: This command is used to build a Docker image. It creates an image based on the contents of the current directory (`.`) and adds a descriptive tag to the image. The tag in this case is `microprj3`, which will be used to identify the image later.
+
+- `docker images list`: This line seems to be incorrect. It should be `docker images` instead of `docker images list`. The command `docker images` lists all the Docker images available on your system.
+
+- `docker run -p 8000:80 microprj3`: This command runs a Docker container based on the previously built image (`microprj3`). It maps port 8000 on your host machine to port 80 inside the container. This means that when you access `http://localhost:8000` in your web browser, the traffic will be forwarded to the container's port 80, where the Flask app is running.
+
 3. Run in Kubernetes:  `./run_kubernetes.sh`
+### ```run_kubernetes.sh```
+
+- `dockerpath="trunghieuluong/microprj3"`: This line assigns the Docker image path to the variable `dockerpath`. In this case, the image is intended to be pushed to the Docker Hub repository with the path `trunghieuluong/microprj3`.
+
+- `kubectl run microprj3 --generator=run-pod/v1 --image=$dockerpath --port=80 --labels "app=microprj3"`: This command is using `kubectl` (Kubernetes command-line tool) to deploy a pod in a Kubernetes cluster. Here's what each option does:
+  - `kubectl run microprj3`: This specifies the name of the deployment, which is `microprj3`.
+  - `--generator=run-pod/v1`: This is specifying the generator to use, indicating a basic pod deployment.
+  - `--image=$dockerpath`: This specifies the Docker image to use for the pod, which is defined by the previously set `dockerpath` variable.
+  - `--port=80`: This specifies that the container inside the pod will be listening on port 80.
+  - `--labels "app=microprj3"`: This assigns the label `app=microprj3` to the pod, which can be used for organizing and identifying pods.
+
+- `kubectl get pods`: This command lists the pods in the Kubernetes cluster. After running the previous command to deploy the pod, this step is likely included to show the status of the newly deployed pod.
+
+- `kubectl port-forward microprj3 8000:80`: This command sets up port forwarding, allowing you to access the pod's port 80 on your local machine's port 8000. This way, when you access `http://localhost:8000` in your web browser, the traffic will be forwarded to the pod's port 80, where your application is running.
+
+###```upload_docker.sh```
+
+- `echo "Docker ID and Image: $dockerpath"`: This line prints a message indicating the Docker ID and Image that will be used in the subsequent steps.
+
+- `docker login`: This command prompts the user to log in to their Docker Hub account, enabling them to push images to the Docker Hub repository.
+
+- `docker image tag microprj3 $dockerpath`: This command tags the locally built Docker image `microprj3` with the specified `dockerpath`. This is necessary to ensure that the image is properly identified when pushing to the Docker Hub repository.
+
+- `docker push $dockerpath`: This command pushes the tagged Docker image to the specified Docker Hub repository using the previously set `dockerpath`.
 
 ### Kubernetes Steps
-
 * Setup and Configure Docker locally
 * Setup and Configure Kubernetes locally
 * Create Flask app in Container

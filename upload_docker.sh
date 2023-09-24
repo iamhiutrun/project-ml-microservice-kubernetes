@@ -6,7 +6,7 @@
 # Step 1:
 # Create dockerpath
 # dockerpath=<your docker ID/path>
-dockerpath="lhieu/microprj3"
+dockerpath="trunghieuluong/microprj3"
 # Step 2:  
 # Authenticate & tag
 echo "Docker ID and Image: $dockerpath"
